@@ -54,7 +54,7 @@ impl OneShotMdnsResolver {
         Ok(Self {
             query_timeout: Duration::from_secs(3),
             unicast_response: UNICAST_RESPONSE,
-            sender_socket: sender_socket(network_scope.is_v4()).and_then(nonblocking)?,
+            sender_socket: sender_socket(&network_scope).and_then(nonblocking)?,
             network_scope,
             receiver_socket: join_multicast(network_scope).and_then(nonblocking)?,
         })

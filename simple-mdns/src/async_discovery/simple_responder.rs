@@ -97,7 +97,7 @@ impl SimpleMdnsResponder {
         scope: NetworkScope,
     ) -> Result<(), SimpleMdnsError> {
         let mut recv_buffer = [0u8; 9000];
-        let sender_socket = sender_socket(scope.is_v4()).and_then(nonblocking)?;
+        let sender_socket = sender_socket(&scope).and_then(nonblocking)?;
 
         let recv_socket = join_multicast(scope).and_then(nonblocking)?;
 

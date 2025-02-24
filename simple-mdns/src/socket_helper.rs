@@ -14,23 +14,32 @@ use crate::{
     NetworkScope,
 };
 
-pub fn sender_socket(ipv4: bool) -> io::Result<UdpSocket> {
-    if ipv4 {
-        let socket = create_socket(Domain::IPV4)?;
-        socket.bind(&SockAddr::from(SocketAddr::new(
-            Ipv4Addr::UNSPECIFIED.into(),
-            0,
-        )))?;
-
-        Ok(socket.into())
-    } else {
-        let socket = create_socket(Domain::IPV6)?;
-        socket.bind(&SockAddr::from(SocketAddr::new(
-            Ipv6Addr::UNSPECIFIED.into(),
-            0,
-        )))?;
-
-        Ok(socket.into())
+pub fn sender_socket(network_scope: &NetworkScope) -> io::Result<UdpSocket> {
+    match network_scope {
+        NetworkScope::V4 => {
+            let socket = create_socket(Domain::IPV4)?;
+            socket.bind(&SockAddr::from(SocketAddr::new(
+                Ipv4Addr::UNSPECIFIED.into(),
+                0,
+            )))?;
+            Ok(socket.into())
+        },
+        NetworkScope::V4WithInterface(ipv4_addr) => {
+            let socket = create_socket(Domain::IPV4)?;
+            socket.bind(&SockAddr::from(SocketAddr::new(
+                ipv4_addr.clone().into(),
+                0,
+            )))?;
+            Ok(socket.into())
+        },
+        NetworkScope::V6 |  NetworkScope::V6WithInterface(_)=> {
+            let socket = create_socket(Domain::IPV6)?;
+            socket.bind(&SockAddr::from(SocketAddr::new(
+                Ipv6Addr::UNSPECIFIED.into(),
+                0,
+            )))?;
+            Ok(socket.into())
+        },
     }
 }
 

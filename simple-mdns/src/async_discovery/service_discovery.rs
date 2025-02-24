@@ -99,7 +99,7 @@ impl ServiceDiscovery {
             instance_name: instance_full_name,
             service_name: service_name.clone(),
             resource_manager: resource_manager.clone(),
-            sender_socket: crate::socket_helper::sender_socket(network_scope.is_v4())
+            sender_socket: crate::socket_helper::sender_socket(&network_scope)
                 .and_then(nonblocking)?,
             network_scope,
         };
